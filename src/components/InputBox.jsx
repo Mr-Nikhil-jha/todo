@@ -49,7 +49,7 @@ function InputBox() {
                     {task.map((ele) => (
                         <li key={ele.id} className={`flex items-center justify-between p-3 bg-gray-200 rounded-lg `}>
                             <span className="text-gray-800 ">{ele.text}</span>
-                            <span
+                            <input
                                 className="border-2"
                                 type="checkbox"
                                 onChange={(e) => {

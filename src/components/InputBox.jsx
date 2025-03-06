@@ -1,21 +1,37 @@
 // import React, { useCallback } from "react";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 function InputBox() {
+    const getLocalData = () => {
+        const lists = localStorage.getItem("myTodo");
+        if (lists) {
+            return JSON.parse(lists);
+        } else {
+            return [];
+        }
+    };
     const [input, setInput] = useState("");
-    const [task, setTask] = useState([]);
+    const [task, setTask] = useState(getLocalData());
     // const [checkAllow, setCheckAllow] = useState(false);
 
     const addTask = () => {
         if (input.trim() === "") return;
-        setTask([...task, { id: new Date(), text: input }]);
-        console.log(task);
+
+        setTask([...task, { id: Date.now().toString(36), text: input }]);
+
         setInput("");
     };
-    let a = useRef(null);
-    // useEffect(() => {
-    //     // console.log(a.current);
-    // }, [a]);
+    const deleteItem = (keyId) => {
+        const updateItem = task.filter((currElem) => {
+            return currElem.id != keyId;
+        });
+        console.log(updateItem);
+        setTask(updateItem);
+    };
+
+    useEffect(() => {
+        localStorage.setItem("myTodo", JSON.stringify(task));
+    }, [task]);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
@@ -31,9 +47,20 @@ function InputBox() {
 
                 <ul className="space-y-3">
                     {task.map((ele) => (
-                        <li key={ele.id} className={`flex items-center justify-between p-3 bg-gray-200 rounded-lg `} ref={a}>
+                        <li key={ele.id} className={`flex items-center justify-between p-3 bg-gray-200 rounded-lg `}>
                             <span className="text-gray-800 ">{ele.text}</span>
-                            <input className="text-red-500  hover:text-red-600" type="checkbox" onChange={() => a.current.classList.toggle("line-through")} />
+                            <span
+                                className="border-2"
+                                type="checkbox"
+                                onChange={(e) => {
+                                    window["target"] = e;
+                                    e.currentTarget.parentElement.classList.toggle("line-through"),
+                                        setTimeout(() => {
+                                            // window.target.target.parentElement.remove();
+                                            deleteItem(ele.id);
+                                        }, 1000);
+                                }}
+                            />
                         </li>
                     ))}
                 </ul>

@@ -20,13 +20,19 @@ function InputBox() {
     const addTask = () => {
         if (input.trim() === "") return;
         if (editToggle) {
-            task.forEach((ele) => {
-                if (ele.id == getId) {
-                    ele.text = input;
-                }
-            });
+            setTask(
+                task.map((ele) => {
+                    if (ele.id == getId) {
+                        return { ...ele, text: input };
+                    }
+                    return ele;
+                })
+            );
+            setInput("");
+            setEditToggle(false);
+        } else {
+            setTask([...task, { id: Date.now().toString(36), text: input, completed: false }]);
         }
-        setTask([...task, { id: Date.now().toString(36), text: input, completed: false }]);
 
         setInput("");
     };

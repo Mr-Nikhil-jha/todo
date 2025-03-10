@@ -16,6 +16,7 @@ function InputBox() {
     const [editToggle, setEditToggle] = useState(false);
     const [getId, setGetId] = useState("");
     let [checkShow, setCheckShow] = useState(true);
+    // const [isHidden, SetIsHidden] = useState(false);
 
     const addTask = () => {
         if (input.trim() === "") return;
@@ -37,6 +38,7 @@ function InputBox() {
         setInput("");
     };
     const toggleTask = (id) => {
+        // setTimeout(() => {
         setTask(task.map((tasks) => (tasks.id === id ? { ...tasks, completed: !tasks.completed } : tasks)));
     };
 
@@ -78,7 +80,7 @@ function InputBox() {
                         <li key={ele.id} className={`flex items-center justify-between p-3 bg-gray-200 rounded-lg ${ele.completed ? "line-through opacity-50" : ""} ${showPrevious && ele.completed ? "hidden" : ""}`}>
                             <div className="flex gap-2">
                                 <input type="checkbox" checked={ele.completed} onChange={() => toggleTask(ele.id)} />
-                                <span className={`text-gray-800 outline-0 ${checkShow ? "" : "opacity-50"}`} contentEditable={!checkShow && true} suppressContentEditableWarning={!checkShow && true}>
+                                <span className={`text-gray-800 outline-0 ${editToggle ? "opacity-50 " : "font-bold"}`} contentEditable={!checkShow && true} suppressContentEditableWarning={!checkShow && true}>
                                     {ele.text}
                                 </span>
                             </div>
@@ -86,7 +88,7 @@ function InputBox() {
                             <div className="flex gap-5">
                                 {/* edit button */}
                                 <span
-                                    className={`cursor-pointer text-right`}
+                                    className={`cursor-pointer text-right ${editToggle ? "text-green-500" : ""}`}
                                     onClick={(e) => {
                                         editTask(ele.id);
                                         setEditToggle((prev) => !prev);

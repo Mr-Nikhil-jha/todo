@@ -16,7 +16,8 @@ function InputBox() {
     const [editToggle, setEditToggle] = useState(false);
     const [getId, setGetId] = useState("");
     let [checkShow, setCheckShow] = useState(true);
-    // const [isHidden, SetIsHidden] = useState(false);
+    const [showPopUp, SetShowPopUp] = useState(false);
+    const [liCount, setLiCount] = useState(1);
 
     const addTask = () => {
         if (input.trim() === "") return;
@@ -33,6 +34,8 @@ function InputBox() {
             setEditToggle(false);
         } else {
             setTask([...task, { id: Date.now().toString(36), text: input, completed: false }]);
+            setLiCount(liCount + 1);
+            console.log(liCount);
         }
 
         setInput("");
@@ -43,10 +46,16 @@ function InputBox() {
     };
 
     const deleteItem = (keyId) => {
-        const updateItem = task.filter((currElem) => {
+        let updateItem = task.filter((currElem) => {
             return currElem.id != keyId;
         });
         console.log(updateItem);
+        if (keyId == "All") {
+            updateItem = [];
+            setLiCount(liCount - liCount + 1);
+        } else {
+            setLiCount(liCount - 1);
+        }
         setTask(updateItem);
     };
 
@@ -71,11 +80,46 @@ function InputBox() {
                     </button>
                 </div>
 
-                <ul className="space-y-3">
-                    <div className="flex gap-5">
-                        <input type="checkbox" checked={!showPrevious} onChange={() => setShowPrevious((prev) => !prev)} />
-                        <span>Show Previous Tasks</span>
+                <ul className="space-y-3 ">
+                    <div className="flex gap-25">
+                        <div className="flex gap-5">
+                            <input type="checkbox" checked={!showPrevious} onChange={() => setShowPrevious((prev) => !prev)} />
+                            <span>Show Previous Tasks</span>
+                        </div>
+                        {liCount > 5 && (
+                            <div className="flex gap-5">
+                                <span
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                        deleteItem("All");
+                                    }}
+                                    onMouseEnter={() => SetShowPopUp(true)}
+                                    onMouseLeave={() => SetShowPopUp(false)}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="transition-colors duration-200 hover:text-red-600"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                                        <path d="M10 11v6"></path>
+                                        <path d="M14 11v6"></path>
+                                        <path d="M9 6V3h6v3"></path>
+                                    </svg>
+                                </span>
+                                {showPopUp && <span className="font-sans">Delete All!</span>}
+                            </div>
+                        )}
                     </div>
+
                     {task.map((ele) => (
                         <li key={ele.id} className={`flex items-center justify-between p-3 bg-gray-200 rounded-lg ${ele.completed ? "line-through opacity-50" : ""} ${showPrevious && ele.completed ? "hidden" : ""}`}>
                             <div className="flex gap-2">

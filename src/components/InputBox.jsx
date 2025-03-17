@@ -17,7 +17,7 @@ function InputBox() {
     const [getId, setGetId] = useState("");
     let [checkShow, setCheckShow] = useState(true);
     const [showPopUp, SetShowPopUp] = useState(false);
-    const [liCount, setLiCount] = useState(1);
+    const [liCount, setLiCount] = useState(0);
 
     const addTask = () => {
         if (input.trim() === "") return;
@@ -35,7 +35,6 @@ function InputBox() {
         } else {
             setTask([...task, { id: Date.now().toString(36), text: input, completed: false }]);
             setLiCount(liCount + 1);
-            console.log(liCount);
         }
 
         setInput("");
@@ -49,10 +48,9 @@ function InputBox() {
         let updateItem = task.filter((currElem) => {
             return currElem.id != keyId;
         });
-        console.log(updateItem);
         if (keyId == "All") {
             updateItem = [];
-            setLiCount(liCount - liCount + 1);
+            setLiCount(0);
         } else {
             setLiCount(liCount - 1);
         }
